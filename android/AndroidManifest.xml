@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="org.verya.HealthConnectTest" android:versionCode="" android:versionName="">
+
+    <!-- Health Connect permissions -->
+    <uses-permission android:name="android.permission.health.READ_HEIGHT"/>
+    <uses-permission android:name="android.permission.health.WRITE_HEIGHT"/>
+    <uses-permission android:name="android.permission.health.READ_WEIGHT"/>
+    <uses-permission android:name="android.permission.health.WRITE_WEIGHT"/>
+
+    <queries>
+        <package android:name="com.google.android.apps.healthdata"/>
+    </queries>
+
+    <application android:name="org.qtproject.qt.android.bindings.QtApplication" android:hardwareAccelerated="true" android:label="">
+
+        <activity android:name=".MainActivity" android:configChanges="orientation|uiMode|screenLayout|screenSize|smallestScreenSize|layoutDirection|locale|fontScale|keyboard|keyboardHidden|navigation|mcc|mnc|density" android:screenOrientation="unspecified" android:launchMode="singleTop" android:exported="true" android:label="">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+            <meta-data android:name="android.app.lib_name" android:value="-- %%INSERT_APP_LIB_NAME%% --"/>
+            <meta-data android:name="android.app.extract_android_style" android:value="full"/>
+        </activity>
+
+        <!-- Health Connect Activity Declaration -->
+        <activity-alias android:name="ViewPermissionUsageActivity" android:exported="true" android:targetActivity=".MainActivity" android:permission="android.permission.START_VIEW_PERMISSION_USAGE">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW_PERMISSION_USAGE"/>
+                <category android:name="android.intent.category.HEALTH_PERMISSIONS"/>
+            </intent-filter>
+        </activity-alias>
+
+        <provider android:name="androidx.core.content.FileProvider" android:authorities="${applicationId}.qtprovider" android:exported="false" android:grantUriPermissions="true">
+            <meta-data android:name="android.support.FILE_PROVIDER_PATHS" android:resource="@xml/qtprovider_paths"/>
+        </provider>
+    </application>
+</manifest>

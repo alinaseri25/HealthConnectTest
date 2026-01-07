@@ -1,0 +1,92 @@
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath 'com.android.tools.build:gradle:8.6.0'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.25"
+    }
+}
+
+repositories {
+    google()
+    mavenCentral()
+}
+
+apply plugin: 'com.android.application'
+apply plugin: 'org.jetbrains.kotlin.android'
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
+
+    // Core Android
+    implementation 'androidx.core:core-ktx:1.13.1'
+    implementation 'androidx.appcompat:appcompat:1.7.0'
+    implementation 'androidx.activity:activity-ktx:1.9.0'
+
+    // Kotlin
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:1.9.25"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.0"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.0"
+
+    // Health Connect
+    implementation "androidx.health.connect:connect-client:1.1.0-alpha10"
+
+    // ⚠️ IMPORTANT: استفاده از نسخه 2.0.4
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.4'
+}
+
+android {
+    namespace 'org.verya.HealthConnectTest'
+    compileSdkVersion 35
+    buildToolsVersion '35.0.0'
+    ndkVersion androidNdkVersion
+
+    packagingOptions {
+        jniLibs.useLegacyPackaging = true
+    }
+
+    sourceSets {
+        main {
+            manifest.srcFile 'AndroidManifest.xml'
+            java.srcDirs = [qtAndroidDir + '/src', 'src', 'java']
+            aidl.srcDirs = [qtAndroidDir + '/src', 'src', 'aidl']
+            res.srcDirs = [qtAndroidDir + '/res', 'res']
+            resources.srcDirs = ['resources']
+            renderscript.srcDirs = ['src']
+            assets.srcDirs = ['assets']
+            jniLibs.srcDirs = ['libs']
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+        coreLibraryDesugaringEnabled true
+    }
+
+    kotlinOptions {
+        jvmTarget = '17'
+        freeCompilerArgs += ['-opt-in=kotlin.RequiresOptIn']
+    }
+
+    lintOptions {
+        abortOnError false
+    }
+
+    aaptOptions {
+        noCompress 'rcc'
+    }
+
+    defaultConfig {
+        applicationId "org.verya.HealthConnectTest"
+        minSdkVersion 28
+        targetSdkVersion 35
+        versionCode 1
+        versionName "1.0"
+
+        ndk.abiFilters = qtTargetAbiList.split(",")
+    }
+}
