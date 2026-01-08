@@ -62,6 +62,11 @@ object HealthBridge {
     }
 
     @JvmStatic
+    fun testCall(): String {
+        return "✅ JNI Bridge Working! SDK=${getAvailability()}"
+    }
+
+    @JvmStatic
     fun isInitialized(): String {
         return when {
             appContext == null -> "CONTEXT_NULL"

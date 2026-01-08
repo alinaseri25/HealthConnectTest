@@ -129,16 +129,8 @@ void MainWindow::onBtnGetPremissionClicked()
 
     ui->txtData->append("=== 🔐 Health Connect Test ===\n");
 
-    // Debug info
-    QJniObject result = QJniObject::callStaticObjectMethod(
-        "org/verya/HealthConnectTest/HealthBridge",
-        "debugInfo",
-        "()Ljava/lang/String;"
-        );
-    ui->txtData->append("📋 Debug: " + result.toString());
-
     // Check permissions
-    result = QJniObject::callStaticObjectMethod(
+    QJniObject result = QJniObject::callStaticObjectMethod(
         "org/verya/HealthConnectTest/HealthBridge",
         "checkPermissions",
         "()Ljava/lang/String;"
