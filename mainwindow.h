@@ -29,5 +29,6 @@ private slots:
     void onBtnReadClicked(void);
     void onBtnCopyClicked(void);
     void onBtnGetPremissionClicked(void);
+    void onBtnExitClicked(void);
 };
 #endif // MAINWINDOW_H

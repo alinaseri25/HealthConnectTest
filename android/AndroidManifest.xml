@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="org.verya.HealthConnectTest" android:versionCode="" android:versionName="">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="org.verya.HealthConnectTest" android:versionCode="-- %%INSERT_VERSION_CODE%% --" android:versionName="-- %%INSERT_VERSION_NAME%% --">
 
     <!-- Health Connect permissions -->
     <uses-permission android:name="android.permission.health.READ_HEIGHT"/>
@@ -11,7 +11,7 @@
         <package android:name="com.google.android.apps.healthdata"/>
     </queries>
 
-    <application android:name="org.qtproject.qt.android.bindings.QtApplication" android:hardwareAccelerated="true" android:label="">
+    <application android:name="org.qtproject.qt.android.bindings.QtApplication" android:hardwareAccelerated="true" android:label="-- %%INSERT_APP_NAME%% --">
 
         <activity android:name=".MainActivity" android:configChanges="orientation|uiMode|screenLayout|screenSize|smallestScreenSize|layoutDirection|locale|fontScale|keyboard|keyboardHidden|navigation|mcc|mnc|density" android:screenOrientation="unspecified" android:launchMode="singleTop" android:exported="true" android:label="">
             <intent-filter>

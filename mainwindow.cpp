@@ -9,6 +9,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->btnRead,&QPushButton::clicked,this,&MainWindow::onBtnReadClicked);
     connect(ui->BtnCopy,&QPushButton::clicked,this,&MainWindow::onBtnCopyClicked);
     connect(ui->BtnGetPremission,&QPushButton::clicked,this,&MainWindow::onBtnGetPremissionClicked);
+    connect(ui->BtnExit,&QPushButton::clicked,this,&MainWindow::onBtnExitClicked);
 }
 
 MainWindow::~MainWindow()
@@ -24,43 +25,10 @@ void MainWindow::readHealth()
         ui->txtData->append("Context is invalid!");
         return;
     }
-
-    // init(context) → returns void → signature = (Landroid/content/Context;)V
-    QJniObject::callStaticMethod<void>(
-        "org/verya/HealthConnectTest/HealthBridge",
-        "init",
-        "(Landroid/content/Context;)V",
-        context.object()
-        );
-
-    ui->txtData->append("init OK");
+    QString status;
+    QJniObject result;
 
 
-    QJniObject result = QJniObject::callStaticObjectMethod(
-        "org/verya/HealthConnectTest/HealthBridge",
-        "isInitialized",
-        "()Ljava/lang/String;"
-        );
-
-    QString status = result.toString();
-    ui->txtData->append("Init status = " + status);
-
-    result = QJniObject::callStaticObjectMethod(
-        "org/verya/HealthConnectTest/HealthBridge",
-        "getAvailability",
-        "()Ljava/lang/String;"
-        );
-
-    status = result.toString();
-    ui->txtData->append("HC availability = " + status);
-
-    // debugInfo
-    result = QJniObject::callStaticObjectMethod(
-        "org/verya/HealthConnectTest/HealthBridge",
-        "debugInfo",
-        "()Ljava/lang/String;"
-        );
-    ui->txtData->append("Debug info = " + result.toString());
 
     // checkPermissions
     result = QJniObject::callStaticObjectMethod(
@@ -89,13 +57,6 @@ void MainWindow::readHealth()
 
     status = result.toString();
     ui->txtData->append(status);
-
-    QJniObject dump = QJniObject::callStaticObjectMethod(
-        "org/verya/HealthConnectTest/HealthBridge",
-        "dumpAllHCClasses",
-        "()Ljava/lang/String;"
-        );
-    ui->txtData->append(dump.toString());
 #else
     qDebug() << "Not Android";
 #endif
@@ -199,4 +160,9 @@ void MainWindow::onBtnGetPremissionClicked()
 #else
     qDebug() << "Not Android";
 #endif
+}
+
+void MainWindow::onBtnExitClicked()
+{
+    QApplication::exit(0);
 }
