@@ -195,7 +195,7 @@ object HealthBridge {
             Log.d(TAG, "📏 Reading height data...")
 
             val end = Instant.now()
-            val start = end.minus(365, ChronoUnit.DAYS)
+            val start = Instant.parse("2000-01-01T00:00:00.000Z")//end.minus(365, ChronoUnit.DAYS)
 
             Log.d(TAG, "⏰ Time range: $start to $end")
 
@@ -221,7 +221,6 @@ object HealthBridge {
 
                 val obj = JSONObject().apply {
                     put("height_m", meters)
-                    put("height_cm", meters * 100)
                     put("time", record.time.toString())
                 }
                 arr.put(obj)
@@ -249,7 +248,7 @@ object HealthBridge {
             Log.d(TAG, "⚖️ Reading weight data...")
 
             val end = Instant.now()
-            val start = end.minus(365, ChronoUnit.DAYS)
+            val start = Instant.parse("2000-01-01T00:00:00.000Z")//end.minus(365, ChronoUnit.DAYS)
 
             Log.d(TAG, "⏰ Time range: $start to $end")
 

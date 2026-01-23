@@ -4,6 +4,13 @@
 #include <QMainWindow>
 #include <QMessageBox>
 #include <QClipboard>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QJsonArray>
+#include <QChart>
+#include <QLineSeries>
+#include <QtCharts/QValueAxis>
+#include <QtCharts/QChartView>
 
 
 QT_BEGIN_NAMESPACE
@@ -22,6 +29,8 @@ public:
 
 private:
     Ui::MainWindow *ui;
+    QLineSeries *series1,*series2;
+
     void readHealth(void);
     void callTest(void);
 

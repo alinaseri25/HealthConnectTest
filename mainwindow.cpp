@@ -28,6 +28,11 @@ void MainWindow::readHealth()
     QString status;
     QJniObject result;
 
+    series1 = new QLineSeries(this);
+    series2 = new QLineSeries(this);
+
+    series1->setName(QString("نمودار قد"));
+    series2->setName(QString("نمودار وزن"));
 
 
     // checkPermissions
@@ -46,7 +51,15 @@ void MainWindow::readHealth()
         );
 
     status = result.toString();
-    ui->txtData->append(status);
+    QJsonDocument *document = new QJsonDocument(QJsonDocument::fromJson(status.toUtf8()));
+    QJsonArray arr = document->array();
+    for(uint32_t i = 0 ; i < arr.size() ; i++)
+    {
+        QJsonObject obj = arr.at(i).toObject();
+        QDateTime dateTime = QDateTime::fromString(obj["time"].toString(), Qt::ISODate);
+        ui->txtData->append(QString("قد : %1 و زمان ثبت : %2").arg(obj["height_m"].toDouble()).arg(dateTime.toString(QString("yyyy/mm/dd hh:MM:ss"))));
+        series1->append(dateTime.toSecsSinceEpoch(),(obj["height_m"].toDouble() * 100));
+    }
 
     //Weight
     result = QJniObject::callStaticObjectMethod(
@@ -56,7 +69,46 @@ void MainWindow::readHealth()
         );
 
     status = result.toString();
-    ui->txtData->append(status);
+    document = new QJsonDocument(QJsonDocument::fromJson(status.toUtf8()));
+    arr = document->array();
+    for(uint32_t i = 0 ; i < arr.size() ; i++)
+    {
+        QJsonObject obj = arr.at(i).toObject();
+        QDateTime dateTime = QDateTime::fromString(obj["time"].toString(), Qt::ISODate);
+        ui->txtData->append(QString("وزن : %1 و زمان ثبت : %2").arg(obj["weight_kg"].toDouble()).arg(dateTime.toString(QString("yyyy/mm/dd hh:MM:ss"))));
+        series2->append(dateTime.toSecsSinceEpoch(),obj["weight_kg"].toDouble());
+    }
+    ui->txtData->append(document->toJson());
+
+    // ui->chart->chart()->addSeries(series1);
+    // ui->chart->chart()->addSeries(series2);
+
+    QChart *chart = new QChart();
+
+    // محور Y برای سری اول
+    QValueAxis *axisY1 = new QValueAxis();
+    axisY1->setTitleText("قد");
+    axisY1->setRange(170, 190);
+    chart->addAxis(axisY1, Qt::AlignLeft);
+
+    // محور Y برای سری اول
+    QValueAxis *axisY2 = new QValueAxis();
+    axisY2->setTitleText("وزن");
+    axisY2->setRange(75, 95);
+    chart->addAxis(axisY2, Qt::AlignRight);
+
+
+    chart->addSeries(series1);
+    chart->addSeries(series2);
+
+
+    // اتصال سری 1 به محور X اصلی و Y اصلی (سمت چپ)
+    chart->series().at(0)->attachAxis(axisY1);
+
+    // اتصال سری 2 به محور X اصلی و Y ثانویه (سمت راست)
+    chart->series().at(1)->attachAxis(axisY2);
+
+    ui->chart->setChart(chart);
 #else
     qDebug() << "Not Android";
 #endif
