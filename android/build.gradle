@@ -1,5 +1,6 @@
 buildscript {
     repositories {
+        maven {url 'https://maven.myket.ir'}
         google()
         mavenCentral()
     }
@@ -11,42 +12,43 @@ buildscript {
 }
 
 repositories {
+    maven {url 'https://maven.myket.ir'}
     google()
     mavenCentral()
 }
 
 apply plugin: 'com.android.application'
 apply plugin: 'org.jetbrains.kotlin.android'
+apply plugin: qtGradlePluginType
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
-
-    // Core Android
-    implementation 'androidx.core:core-ktx:1.13.1'
-    implementation 'androidx.appcompat:appcompat:1.7.0'
-    implementation 'androidx.activity:activity-ktx:1.9.0'
-
-    // Kotlin
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:1.9.25"
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.0"
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.0"
+    //noinspection GradleDependency
+    implementation 'androidx.core:core:1.16.0'
 
     // Health Connect
     implementation "androidx.health.connect:connect-client:1.1.0-alpha10"
-
-    // ⚠️ IMPORTANT: استفاده از نسخه 2.0.4
-    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.4'
 }
 
 android {
-    namespace 'org.verya.HealthConnectTest'
-    compileSdkVersion 35
-    buildToolsVersion '35.0.0'
-    ndkVersion androidNdkVersion
+    /*******************************************************
+     * The following variables:
+     * - androidBuildToolsVersion,
+     * - androidCompileSdkVersion
+     * - qtAndroidDir - holds the path to qt android files
+     *                   needed to build any Qt application
+     *                   on Android.
+     * - qtGradlePluginType - whether to build an app or a library
+     *
+     * are defined in gradle.properties file. This file is
+     * updated by QtCreator and androiddeployqt tools.
+     * Changing them manually might break the compilation!
+     *******************************************************/
 
-    packagingOptions {
-        jniLibs.useLegacyPackaging = true
-    }
+    namespace = androidPackageName
+    compileSdkVersion androidCompileSdkVersion
+    buildToolsVersion androidBuildToolsVersion
+    ndkVersion = androidNdkVersion
 
     sourceSets {
         main {
@@ -58,35 +60,32 @@ android {
             renderscript.srcDirs = ['src']
             assets.srcDirs = ['assets']
             jniLibs.srcDirs = ['libs']
-        }
+       }
+    }
+
+    tasks.withType(JavaCompile) {
+        options.incremental = true
+        options.compilerArgs += ['-Xlint:all']
     }
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
-        coreLibraryDesugaringEnabled true
-    }
-
-    kotlinOptions {
-        jvmTarget = '17'
-        freeCompilerArgs += ['-opt-in=kotlin.RequiresOptIn']
     }
 
     lintOptions {
-        abortOnError false
+        abortOnError = false
     }
 
     aaptOptions {
+        // Do not compress Qt binary resources file
         noCompress 'rcc'
     }
 
     defaultConfig {
-        applicationId "org.verya.HealthConnectTest"
-        minSdkVersion 28
-        targetSdkVersion 35
-        versionCode 1
-        versionName "1.0"
-
+        resConfig "en"
+        minSdkVersion qtMinSdkVersion
+        targetSdkVersion qtTargetSdkVersion
         ndk.abiFilters = qtTargetAbiList.split(",")
     }
 }

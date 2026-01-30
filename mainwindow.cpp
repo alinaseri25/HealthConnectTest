@@ -34,6 +34,14 @@ void MainWindow::readHealth()
     series1->setName(QString("نمودار قد"));
     series2->setName(QString("نمودار وزن"));
 
+    // Init
+    QJniObject::callStaticMethod<void>(
+        "org/verya/HealthConnectTest/HealthBridge",
+        "init",
+        "(Landroid/content/Context;)V",
+        context.object()
+        );
+
 
     // checkPermissions
     result = QJniObject::callStaticObjectMethod(
@@ -109,6 +117,8 @@ void MainWindow::readHealth()
     chart->series().at(1)->attachAxis(axisY2);
 
     ui->chart->setChart(chart);
+
+    ui->txtData->append("TESTTESTTEST");
 #else
     qDebug() << "Not Android";
 #endif
